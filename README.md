@@ -8,7 +8,7 @@
 [![integration](https://github.com/scroll-tech/scroll/actions/workflows/integration.yml/badge.svg)](https://github.com/scroll-tech/scroll/actions/workflows/integration.yml)
 [![codecov](https://codecov.io/gh/scroll-tech/scroll/branch/develop/graph/badge.svg?token=VJVHNQWGGW)](https://codecov.io/gh/scroll-tech/scroll)
 
-<a href="https://scroll.io">Scroll</a> is a zkRollup Layer 2 dedicated to enhance Ethereum scalability through a bytecode-equivalent [zkEVM](https://github.com/scroll-tech/zkevm-circuits) circuit. This monorepo encompasses essential infrastructure components of the Scroll protocol. It contains the L1 and L2 contracts, the rollup node, the prover client, and the prover coordinator.
+<a href="https://scroll.io">Scroll</a> is a zkRollup Layer 2 dedicated to enhancing Ethereum scalability through a bytecode-equivalent [zkEVM](https://github.com/scroll-tech/zkevm-circuits) circuit. This monorepo encompasses essential infrastructure components of the Scroll protocol. It contains the L1 and L2 contracts, the rollup node, the prover client, and the prover coordinator.
 
 ## Directory Structure
 
@@ -28,18 +28,45 @@
 
 We welcome community contributions to this repository. Before you submit any issues or PRs, please read the [Code of Conduct](CODE_OF_CONDUCT.md) and the [Contribution Guideline](CONTRIBUTING.md).
 
-## Prerequisites
-+ Go 1.20
-+ Rust (for version, see [rust-toolchain](./common/libzkp/impl/rust-toolchain))
-+ Hardhat / Foundry
-+ Docker
+## Installation
 
-To run the tests, it is essential to first pull or build the required Docker images. Execute the following commands in the root directory of the repository to do this:
+To get started with the Scroll Monorepo, follow these steps:
 
-```bash
-docker pull postgres
-make dev_docker
-```
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/scroll-tech/scroll.git
+    ```
+
+2. Navigate to the cloned directory:
+
+    ```bash
+    cd scroll
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    # Assuming you have Go installed
+    go mod tidy
+
+    # Assuming you have Rust installed
+    # Install Rust toolchain (if not already installed)
+    rustup toolchain install $(cat ./common/libzkp/impl/rust-toolchain)
+    ```
+
+4. Set up Docker (if not already installed):
+
+    Docker is required for running tests and some development tasks. Follow the official Docker installation guide for your operating system: [Get Docker](https://docs.docker.com/get-docker/)
+
+5. Pull or build the required Docker images:
+
+    ```bash
+    docker pull postgres
+    make dev_docker
+    ```
+
+Once you have completed these steps, you're ready to start exploring and contributing to the Scroll Monorepo!
 
 ## Testing Rollup & Coordinator
 
