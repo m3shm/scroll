@@ -1,5 +1,4 @@
-# Scroll Monorepo 
-*The zkEVM zkRollup L2 for Ethereum scalability*
+# Scroll Monorepo
 
 [![rollup](https://github.com/scroll-tech/scroll/actions/workflows/rollup.yml/badge.svg)](https://github.com/scroll-tech/scroll/actions/workflows/rollup.yml)
 [![contracts](https://github.com/scroll-tech/scroll/actions/workflows/contracts.yml/badge.svg)](https://github.com/scroll-tech/scroll/actions/workflows/contracts.yml)
@@ -9,39 +8,118 @@
 [![integration](https://github.com/scroll-tech/scroll/actions/workflows/integration.yml/badge.svg)](https://github.com/scroll-tech/scroll/actions/workflows/integration.yml)
 [![codecov](https://codecov.io/gh/scroll-tech/scroll/branch/develop/graph/badge.svg?token=VJVHNQWGGW)](https://codecov.io/gh/scroll-tech/scroll)
 
-<a href="https://scroll.io">Scroll</a> is a zkRollup Layer 2 scaling solution for Ethereum, offering significant performance and cost improvements while maintaining full compatibility with existing Ethereum developer tools.  Scroll is ideal for developers building decentralized applications that need high throughput, low fees, and seamless Ethereum compatibility.
-
-**For developers building on Scroll.**
-
-## Prerequisites
-* Go 1.20 
-* Rust (for version, see [rust-toolchain](./common/libzkp/impl/rust-toolchain))
-* Hardhat / Foundry
-* Docker
-
-## Installation & Getting Started
-1. `git clone https://github.com/scroll-tech/scroll`
-2. `cd scroll && make install_dependencies` 
-3. `make start_local_testnet`
+<a href="https://scroll.io">Scroll</a> is a zkRollup Layer 2 dedicated to enhancing Ethereum scalability through a bytecode-equivalent [zkEVM](https://github.com/scroll-tech/zkevm-circuits) circuit. This monorepo encompasses essential infrastructure components of the Scroll protocol. It contains the L1 and L2 contracts, the rollup node, the prover client, and the prover coordinator.
 
 ## Directory Structure
-* **bridge-history-api:** Collects deposit/withdraw events, generates withdrawal proofs
-* **common:** Shared libraries and types
-* **coordinator:** Dispatches proving tasks
-* **database:** Database client and schema
-* **l2geth:**  Scroll execution node
-* **prover:**  Runs proof generation
-* **rollup:** Rollup-related services
-* **rpc-gateway:** RPC gateway (external repo)
-* **tests:** Integration tests
 
-## Technologies
-* Rust
-* Solidity
-* Hardhat / Foundry
+<pre>
+├── <a href="./bridge-history-api/">bridge-history-api</a>: Bridge history service that collects deposit and withdraw events from both L1 and L2 chains and generates withdrawal proofs
+├── <a href="./common/">common</a>: Common libraries and types
+├── <a href="./coordinator/">coordinator</a>: Prover coordinator service that dispatches proving tasks to provers
+├── <a href="./database">database</a>: Database client and schema definition
+├── <a href="./src">l2geth</a>: Scroll execution node
+├── <a href="./prover">prover</a>: Prover client that runs proof generation for zkEVM circuit and aggregation circuit
+├── <a href="./rollup">rollup</a>: Rollup-related services
+├── <a href="./rpc-gateway">rpc-gateway</a>: RPC gateway external repo
+└── <a href="./tests">tests</a>: Integration tests
+</pre>
 
 ## Contributing
-Please see the [Code of Conduct](CODE_OF_CONDUCT.md) and [Contribution Guideline](CONTRIBUTING.md) before submitting issues or PRs.
+
+We welcome community contributions to this repository. Before you submit any issues or PRs, please read the [Code of Conduct](CODE_OF_CONDUCT.md) and the [Contribution Guideline](CONTRIBUTING.md).
+
+## Installation
+
+To get started with the Scroll Monorepo, follow these steps:
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/scroll-tech/scroll.git
+    ```
+
+2. Navigate to the cloned directory:
+
+    ```bash
+    cd scroll
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    # Assuming you have Go installed
+    go mod tidy
+
+    # Assuming you have Rust installed
+    # Install Rust toolchain (if not already installed)
+    rustup toolchain install $(cat ./common/libzkp/impl/rust-toolchain)
+    ```
+
+4. Set up Docker (if not already installed):
+
+    Docker is required for running tests and some development tasks. Follow the official Docker installation guide for your operating system: [Get Docker](https://docs.docker.com/get-docker/)
+
+5. Pull or build the required Docker images:
+
+    ```bash
+    docker pull postgres
+    make dev_docker
+    ```
+
+Once you have completed these steps, you're ready to start exploring and contributing to the Scroll Monorepo!
+
+## Testing Rollup & Coordinator
+
+### For Non-Apple Silicon (M1/M2) Macs
+
+Run the tests using the following commands:
+
+```bash
+go test -v -race -covermode=atomic scroll-tech/rollup/...
+go test -tags="mock_verifier" -v -race -covermode=atomic scroll-tech/coordinator/...
+go test -v -race -covermode=atomic scroll-tech/database/...
+go test -v -race -covermode=atomic scroll-tech/common/...
+```
+
+### For Apple Silicon (M1/M2) Macs
+
+To run tests on Apple Silicon Macs, build and execute the Docker image as outlined below:
+
+#### Build a Docker Image for Testing
+
+Use the following command to build a Docker image:
+
+```bash
+make build_test_docker
+```
+
+This command builds a Docker image named `scroll_test_image` using the Dockerfile found at `./build/dockerfiles/local_test.Dockerfile`.
+
+#### Run Docker Image
+
+After the image is built, run a Docker container from it:
+
+```bash
+make run_test_docker
+```
+
+This command runs a Docker container named `scroll_test_container` from the `scroll_test_image` image. The container uses the host network and has access to the Docker socket and the current directory.
+
+Once the Docker container is running, execute the tests using the following commands:
+
+```bash
+go test -v -race -covermode=atomic scroll-tech/rollup/...
+go test -tags="mock_verifier" -v -race -covermode=atomic scroll-tech/coordinator/...
+go test -v -race -covermode=atomic scroll-tech/database/...
+go test -v -race -covermode=atomic scroll-tech/common/...
+```
+
+## Testing Contracts
+
+You can find the unit tests in [`contracts/src/test/`](/contracts/src/test/), and integration tests in [`contracts/integration-test/`](/contracts/integration-test/).
+
+See [`contracts`](/contracts) for more details on the contracts.
 
 ## License
+
 Scroll Monorepo is licensed under the [MIT](./LICENSE) license.
